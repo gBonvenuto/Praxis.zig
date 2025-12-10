@@ -7,7 +7,7 @@
         // Adding the dependency for the RTOS itself
         // This has probably already been added if the user used zig fetch
         // to add the RTOS as a dependency
-        .my_RTOS = .{
+        .praxis = .{
             .path = "../../"
         }
     },
