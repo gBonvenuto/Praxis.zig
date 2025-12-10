@@ -1,2 +1,18 @@
 # meuRTOS.zig
 Tentando fazer um RTOS em Zig (e possivelmnte documentando minha jornada)
+
+Trying to build an RTOS in Zig (and possibly documenting my journey)
+
+# TODO
+
+I'll start with the arduino-uno
+
+- [ ] Create a linker-script
+- [ ] Create a device-tree like structure
+- [ ] Create basic drivers (uart, GPIO, LED, button)
+- [ ] Create interrupts
+- [ ] Create a scheduler
+- [ ] Create tests
+- [ ] Create examples
+
+By the end of each task I'll write the devlog
