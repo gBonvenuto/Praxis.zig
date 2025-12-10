@@ -1,0 +1,21 @@
+.{
+    .name = .blinky_no_drivers,
+    .version = "0.0.0",
+    .fingerprint = 0x814e90c140559737, // Changing this has security and trust implications.
+    .minimum_zig_version = "0.15.2",
+    .dependencies = .{
+        // Adding the dependency for the RTOS itself
+        // This has probably already been added if the user used zig fetch
+        // to add the RTOS as a dependency
+        .my_RTOS = .{
+            .path = "../../"
+        }
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        // For example...
+        //"LICENSE",
+        //"README.md",
+    },
+}
