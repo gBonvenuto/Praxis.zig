@@ -1,4 +1,4 @@
-# praxix.zig
+# praxis.zig
 Tentando fazer um RTOS em Zig (e possivelmnte documentando minha jornada)
 
 Trying to build an RTOS in Zig (and possibly documenting my journey)
