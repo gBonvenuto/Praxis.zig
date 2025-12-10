@@ -7,7 +7,7 @@ Trying to build an RTOS in Zig (and possibly documenting my journey)
 
 I'll start with the arduino-uno
 
-- [ ] Create a linker-script
+- [ x ] Create a linker-script
 - [ ] Create a device-tree like structure
 - [ ] Create basic drivers (uart, GPIO, LED, button)
 - [ ] Create interrupts
