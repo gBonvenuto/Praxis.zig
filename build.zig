@@ -42,18 +42,21 @@ pub fn PraxisBuild() type {
         fn add_board_option(self: *@This()) ?Board {
             const board = self.b.option(Board, "board", "The board where the program will be flashed to");
 
-            if (board) |brd| {
-
+            if (board) |brd| brd: {
                 self.board = brd;
 
-                inline for(@typeInfo(boards).@"struct".decls) |v| {
+                // Setting the target based on the boards if the target
+                // is not already defined by the user
+                if (self.options.target != null) {
+                    break :brd;
+                }
+                inline for (@typeInfo(boards).@"struct".decls) |v| {
                     if (std.mem.eql(u8, @tagName(brd), v.name)) {
                         self.options.target = self.b.standardTargetOptions(.{
                             .default_target = @field(boards, v.name).target,
                         });
                     }
                 }
-
             }
             return board;
         }
@@ -77,6 +80,12 @@ pub fn PraxisBuild() type {
                     .target = options.target,
                     .optimize = options.optimize,
                     .link_libc = false,
+                    .imports = &.{
+                        .{
+                            .name = "praxis",
+                            .module = self.praxis_dep.module("praxis"),
+                        },
+                    },
                 }),
             });
 
@@ -123,5 +132,7 @@ pub fn PraxisBuild() type {
 }
 
 pub fn build(b: *std.Build) void {
-    _ = b;
+    _ = b.addModule("praxis", .{
+        .root_source_file = b.path("./root.zig"),
+    });
 }

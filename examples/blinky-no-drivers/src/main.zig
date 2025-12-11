@@ -1,3 +1,5 @@
+const praxis = @import("praxis");
+const drivers = praxis.drivers;
 const p_ddrb:  *volatile u8 = @ptrFromInt(0x24);
 const p_portb: *volatile u8 = @ptrFromInt(0x25);
 const LED_PIN = 5;
@@ -10,10 +12,10 @@ pub fn delay() void {
 }
 
 pub fn main() noreturn {
-    p_ddrb.* |= (1 << LED_PIN);
+    drivers.gpio.gpio_b.ddr.pin5 = .out;
 
     while (true) {
-        p_portb.* ^= (1 << LED_PIN);
+        drivers.gpio.gpio_b.port.pin5 ^= 1;
         delay();
     }
 }

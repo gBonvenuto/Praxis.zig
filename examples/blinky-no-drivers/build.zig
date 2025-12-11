@@ -8,7 +8,6 @@ pub fn build(b: *std.Build) !void {
         .root_source_file = b.path("src/main.zig"),
     });
 
-
     const exe = praxis_build.add_executable();
     _ = praxis_build.add_flash_step();
 
