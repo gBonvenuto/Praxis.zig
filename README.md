@@ -29,4 +29,4 @@ I'll start with the arduino-uno
 
 By the end of each task I'll write the devlog
 
-_Note: I've stalled this project since joining the GeoBench project. But I still intend to continue the development and the devlog._ 
+_Note: I've stalled this project since joining the [GeoBench](https://github.com/LSC-Unicamp) project. But I still intend to continue the development and the devlog._ 
