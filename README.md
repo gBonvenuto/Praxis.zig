@@ -8,6 +8,8 @@ EN: Trying to build an RTOS in Zig (and possibly documenting my journey)
 I'll start with the arduino-uno
 
 - [x] Create a linker-script
+- [x] Create a beginner friendly build process
+- [x] Learn how to turn it into a library
 - [ ] Create basic drivers (uart, GPIO, LED, button)
   - [x] UART
   - [x] LED
@@ -22,6 +24,7 @@ I'll start with the arduino-uno
 - [ ] Create a scheduler
 - [ ] Create tests
 - [ ] Create examples
+  - [x] LED
 - [ ] Port to STM32 blackpill
 
 By the end of each task I'll write the devlog
