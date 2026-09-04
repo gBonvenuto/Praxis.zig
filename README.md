@@ -11,7 +11,7 @@ I'll start with the arduino-uno
 - [x] Create a beginner friendly build process
 - [x] Learn how to turn it into a library
 - [ ] Create basic drivers (uart, GPIO, LED, button)
-  - [x] UART
+  - [x] UART (not intuitive yet)
   - [x] LED
   - [ ] GPIO
   - [ ] BUTTON
@@ -24,7 +24,7 @@ I'll start with the arduino-uno
 - [ ] Create a scheduler
 - [ ] Create tests
 - [ ] Create examples
-  - [x] LED
+  - [x] Blinky (no drivers)
 - [ ] Port to STM32 blackpill
 
 By the end of each task I'll write the devlog
