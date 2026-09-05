@@ -1,12 +1,12 @@
 const std = @import("std");
-const boards = @import("./boards/boards.zig");
-const Board = boards.Board;
+const platforms = @import("./platforms/platforms.zig");
+const platform = platforms.platform;
 
 pub const Options = struct {
     target: ?std.Build.ResolvedTarget = null,
     optimize: ?std.builtin.OptimizeMode = null,
     root_source_file: ?std.Build.LazyPath = null,
-    board: ?Board = null,
+    platform: ?platform = null,
 };
 
 pub fn PraxisBuild() type {
@@ -35,25 +35,25 @@ pub fn PraxisBuild() type {
         }
 
         // TODO:
-        fn add_board_option(self: *@This()) ?Board {
-            const board = self.b.option(Board, "board", "The board where the program will be flashed to");
+        fn add_platform_option(self: *@This()) ?platform {
+            const platform = self.b.option(platform, "platform", "The platform where the program will be flashed to");
 
-            if (board) |brd| brd: {
-                self.options.board = brd;
+            if (platform) |brd| brd: {
+                self.options.platform = brd;
 
-                // Setting the target based on the boards if the target
+                // Setting the target based on the platforms if the target
                 // is not already defined by the user
                 if (self.options.target != null) {
                     break :brd;
                 }
 
                 self.options.target = self.b.standardTargetOptions(.{
-                    .default_target = boards.Build(brd).target,
+                    .default_target = platforms.Build(brd).target,
                 });
             } else {
-                std.debug.print("You need to set a board with `-Dboard`, see `zig build -h`\n", .{});
+                std.debug.print("You need to set a platform with `-Dplatform`, see `zig build -h`\n", .{});
             }
-            return board;
+            return platform;
         }
         pub fn add_executable(self: *@This()) ?*std.Build.Step.Compile {
             const b = self.b;
@@ -61,8 +61,8 @@ pub fn PraxisBuild() type {
 
             options.optimize = if (options.optimize != null) options.optimize.? else .ReleaseSmall;
             options.root_source_file = if (options.root_source_file != null) options.root_source_file else @panic("root_source_file with main is needed");
-            options.board = if (options.board != null) options.board else add_board_option(self);
-            options.target = if (options.target != null) options.target.? else @panic("target not set. Try using the board option");
+            options.platform = if (options.platform != null) options.platform else add_platform_option(self);
+            options.target = if (options.target != null) options.target.? else @panic("target not set. Try using the platform option");
 
             const main_exe = b.addExecutable(.{
                 .name = "main",
@@ -81,7 +81,7 @@ pub fn PraxisBuild() type {
             });
 
             const config = b.addOptions();
-            config.addOption(Board, "board", options.board.?);
+            config.addOption(platform, "platform", options.platform.?);
             main_exe.root_module.addOptions("config", config);
 
             const praxis_dep = self.praxis_dep;
@@ -90,7 +90,7 @@ pub fn PraxisBuild() type {
             const exe = b.addExecutable(.{
                 .name = "arduino-uno",
                 .root_module = b.createModule(.{
-                    .root_source_file = praxis_dep.path("").join(b.allocator, "boards/arduino_uno/start.zig") catch unreachable,
+                    .root_source_file = praxis_dep.path("").join(b.allocator, "platforms/arduino_uno/start.zig") catch unreachable,
                     .target = options.target,
                     .optimize = options.optimize,
                     .link_libc = false,
@@ -98,7 +98,7 @@ pub fn PraxisBuild() type {
             });
 
             exe.root_module.addImport("main", main_exe.root_module);
-            exe.setLinkerScript(praxis_dep.path("").join(b.allocator, "boards/arduino_uno/linker.ld") catch unreachable);
+            exe.setLinkerScript(praxis_dep.path("").join(b.allocator, "platforms/arduino_uno/linker.ld") catch unreachable);
             exe.bundle_compiler_rt = false;
 
             self.exe = exe;
@@ -106,8 +106,8 @@ pub fn PraxisBuild() type {
             return exe;
         }
         pub fn add_flash_step(self: *Self) ?*std.Build.Step {
-            if (self.options.board == null) {
-                std.debug.print("Board not set, try to use -Dboard option\n", .{});
+            if (self.options.platform == null) {
+                std.debug.print("platform not set, try to use -Dplatform option\n", .{});
                 return null;
             }
 
@@ -116,7 +116,7 @@ pub fn PraxisBuild() type {
                 return null;
             }
 
-            return boards.Build(self.options.board.?).flashStep(self);
+            return platforms.Build(self.options.platform.?).flashStep(self);
         }
     };
 }

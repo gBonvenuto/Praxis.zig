@@ -1,9 +1,5 @@
-const Gpio = @import("../../../common/drivers/Gpio.zig");
 const std = @import("std");
 const device = @import("../device.zig"); // TODO: implementar um overlay depois...
-
-const Direction = Gpio.Direction;
-const Value = Gpio.Value;
 
 pub const Ctx = struct {
     port: enum(u16) {
@@ -17,6 +13,16 @@ pub const Ctx = struct {
 const FLAGS = enum(u16) {
     GPIO_ACTIVE_LOW,
     GPIO_ACTIVE_HIGH,
+};
+
+const Value = enum(u1) {
+    low = 0,
+    high = 1,
+};
+
+const Direction = enum(u1) {
+    in = 0,
+    out = 1,
 };
 
 inline fn active(flags: FLAGS) Value {
@@ -37,7 +43,7 @@ pub fn init(ctx: Ctx) Self {
 
 pub inline fn setDirection(self: Self, pin: u8, direction: Direction) void {
     const gpio = @field(device.soc, @tagName(self.ctx.port));
-    const ddr: *u8 = @ptrCast(gpio.ddr);
+    const ddr: *volatile u8 = @ptrCast(gpio.ddr);
 
     const pin_pos: u8 = (1 << pin);
 
@@ -50,8 +56,8 @@ pub inline fn setDirection(self: Self, pin: u8, direction: Direction) void {
 
 pub inline fn write(self: Self, pin: u8, value: Value) !void {
     const gpio = @field(device.soc, @tagName(self.ctx.port));
-    const ddr: *u8 = @ptrCast(gpio.ddr);
-    const port: *u8 = @ptrCast(gpio.port);
+    const ddr: *volatile u8 = @ptrCast(gpio.ddr);
+    const port: *volatile u8 = @ptrCast(gpio.port);
 
     // if ddr is not set to out direction, then
     // we should have an error pointing it out
@@ -72,8 +78,8 @@ pub inline fn write(self: Self, pin: u8, value: Value) !void {
 
 pub inline fn toggle(self: Self, pin: u8) !void {
     const gpio = @field(device.soc, @tagName(self.ctx.port));
-    const ddr: *u8 = @ptrCast(gpio.ddr);
-    const pin_: *u8 = @ptrCast(gpio.pin);
+    const ddr: *volatile u8 = @ptrCast(gpio.ddr);
+    const pin_: *volatile u8 = @ptrCast(gpio.pin);
 
     // if ddr is not set to out direction, then
     // we should have an error pointing it out
@@ -89,7 +95,7 @@ pub inline fn toggle(self: Self, pin: u8) !void {
 
 pub inline fn read(self: Self, pin: u8) void {
     const gpio = @field(device.soc, @tagName(self.ctx.port));
-    const pin_: *u8 = @ptrCast(gpio.pin_);
+    const pin_: *volatile u8 = @ptrCast(gpio.pin_);
 
     // It is possible to read on OUTPUT mode, so I'll not return
     // any errors

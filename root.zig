@@ -1,12 +1,14 @@
-pub const drivers = @import("./common/drivers/drivers.zig");
 pub const boards = @import("boards/boards.zig");
 const std = @import("std");
 
 // TODO: será que isso aqui faz sentido?
-pub fn Device() type {
+//
+// Outra alternativa seria o device.zig de cada board já ser o struct
+// retornado aqui
+pub fn platform() type {
     return struct {
         board: boards.Board = undefined,
-        drivers: type = undefined,
+        peripherals: type = undefined,
 
         const Self: type = @This();
 
@@ -18,9 +20,14 @@ pub fn Device() type {
 
             const board = @field(boards.Board, @tagName(config.board));
 
-            const device: Self = .{ .board = board, .drivers = boards.Device(board).drivers};
+            // Qual a diferença entre device e board?
+            const device: Self = .{ .board = board, .peripherals = boards.Device(board).peripherals};
             
             return device;
         }
     };
+}
+
+pub fn hardware_get_alias() void{
+
 }
